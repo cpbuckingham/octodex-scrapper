@@ -5,31 +5,28 @@ var cheerio = require('cheerio');
 var app     = express();
 
 app.get('/scrape', function(req, res){
-  // Let's scrape Anchorman 2
-  url = 'http://www.imdb.com/title/tt1229340/';
+  // Let's scrape ocotodex
+  url = 'https://octodex.github.com';
 
   request(url, function(error, response, html){
     if(!error){
       var $ = cheerio.load(html);
 
-      var title, release, rating;
-      var json = { title : "", release : "", rating : ""};
+      var link;
+      var json = { link : ""};
 
-      $('.title_wrapper').filter(function(){
+      $('.item a').each(function(){
         var data = $(this);
-        title = data.children().first().text().trim();
-        release = data.children().last().children().last().text().trim();
-
-        json.title = title;
-        json.release = release;
+        var name = data.first().children().attr('data-src');
+        json.link = url + name;
       })
 
-      $('.ratingValue').filter(function(){
-        var data = $(this);
-        rating = data.text().trim();
-
-        json.rating = rating;
-      })
+      // $('.ratingValue').filter(function(){
+      //   var data = $(this);
+      //   rating = data.text().trim();
+      //
+      //   json.rating = rating;
+      // })
     }
 
     fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
