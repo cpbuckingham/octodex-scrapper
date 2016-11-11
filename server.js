@@ -18,7 +18,11 @@ app.get('/', function(req, res){
           arr.push(final);
           }
         });
-        console.log(arr)
+              // console.log(arr)
+        function getRandomInt(min, max) {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+          }
+              console.log(arr[getRandomInt(0,arr.length)]);
       }
     })
   })
