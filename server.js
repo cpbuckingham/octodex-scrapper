@@ -1,42 +1,28 @@
 var express = require('express');
-var fs      = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
 var app     = express();
 
-app.get('/scrape', function(req, res){
-  // Let's scrape ocotodex
-  url = 'https://octodex.github.com';
+
+app.get('/', function(req, res){
+  const url = 'https://octodex.github.com';
+  var arr =[];
 
   request(url, function(error, response, html){
     if(!error){
       var $ = cheerio.load(html);
-
-      var link;
-      var json = { link : ""};
-
-      $('.item a').each(function(){
-        var data = $(this);
-        var name = data.first().children().attr('data-src');
-        json.link = url + name;
-      })
-
-      // $('.ratingValue').filter(function(){
-      //   var data = $(this);
-      //   rating = data.text().trim();
-      //
-      //   json.rating = rating;
-      // })
-    }
-
-    fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
-      console.log('File successfully written! - Check your project directory for the output.json file');
+        $('.item a').each(function (index, value){
+          listing = $(this).first().children().attr('data-src');
+          if (listing !== undefined){
+          var final= url+listing;
+          arr.push(final);
+          }
+        });
+        console.log(arr)
+      }
     })
-
-    res.send('Check your console!')
   })
-})
 
-app.listen('8081')
-console.log('Magic happens on port 8081');
+app.listen('8080')
+console.log('Refresh 8080');
 exports = module.exports = app;
